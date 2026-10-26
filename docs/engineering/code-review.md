@@ -17,6 +17,8 @@ Type `/code-review`, or the agent reaches for it automatically when you ask to r
 | The whole codebase has drifted, not one diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | Something is broken and you do not know why | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
+These other skill pages belong to the broader aihero catalog; they are not part of this repository's 13 promoted skills.
+
 You must supply the fixed point. If you do not, the skill asks for one rather than guessing. Before it spawns anything, it checks that the ref resolves and that the diff is not empty, so a mistyped branch name fails in front of you instead of inside two sub-agents.
 
 ## Prerequisites
@@ -30,7 +32,7 @@ The Spec axis needs a spec to exist and be findable. It looks in this order:
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch or feature name.
 4. Asking you.
 
-Step 1 depends on the tracker doc, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the skill skips the Spec sub-agent and the report says "no spec available" rather than inventing requirements.
+Step 1 depends on a configured tracker doc. The [setup-matt-pocock-skills page](https://aihero.dev/skills-setup-matt-pocock-skills) describes that setup, but the skill is not included in this repository's promoted set. You can provide a spec path instead. With no spec at all, the skill skips the Spec sub-agent and reports "no spec available" rather than inventing requirements.
 
 ## The two axes
 
@@ -51,7 +53,7 @@ The **smell baseline** sits under the repo's standards. It is twelve code smells
 
 This is the most reported problem with the skill, and it is not fixed. Claude Code ships its own `/code-review`, which does something different: it hunts bugs in the diff, where this one checks spec compliance and repo standards. When you install this library, one of them wins, and which one depends on how you installed:
 
-- **Plugin marketplace.** Every skill gets a `mattpocock-skills:` prefix, and the built-in becomes hard to reach at the unqualified name.
+- **Plugin marketplace.** The skill may use a plugin-qualified name, while a plain skills install can shadow the built-in. Check which command your harness resolves before using it.
 - **Plain skills install.** The local file wins, and this skill shadows the built-in.
 
 One answer is to remove Claude Code's built-in skills entirely. That saves a lot of [context](https://www.aihero.dev/ai-coding-dictionary/context), and the collision stops mattering. The shadowing itself is arguably a Claude Code [harness](https://www.aihero.dev/ai-coding-dictionary/harness) bug (a skill author should be free to name a skill anything), so the other answer is to rename the local copy. `npx skills update` undoes an edit to the frontmatter or a renamed directory. The durable workaround users report is to fork the skill to a new name and drop `code-review` from the managed set. Keep a note of the commit you forked from so you can re-sync by hand.
@@ -62,11 +64,11 @@ This is a known open bug. Several people have reproduced it, in more than one ha
 
 **Should I run it in the same [session](https://www.aihero.dev/ai-coding-dictionary/session) that wrote the code?**
 
-Prefer a fresh one. As one reader put it: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." An agent that reviews in the authoring session has every assumption that shaped the code in its context. An independent reviewer would not have that context. This is also why people ask for [implement](https://aihero.dev/skills-implement) without its built-in review step, because that step runs the review inside the session that just wrote the diff. The independent version is to invoke `/code-review` yourself from a clean session.
+Prefer a fresh one. As one reader put it: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." The review agents run separately, but a fresh parent session reduces carryover from the implementation discussion. The broader [implement page](https://aihero.dev/skills-implement) describes a build flow with a closing review in the writing session; that skill is not in this repository's promoted set.
 
 **After every ticket, or once at the end?**
 
-Both work, and the skill does not decide for you. Per-ticket keeps each diff small enough that the Spec axis has one clear spec to check against, which is the mode `implement` uses. Batching to the end of a branch catches interactions between tickets that the per-ticket passes each miss. If you are unsure, review per ticket and run one final pass against the branch point.
+Both work, and the skill does not decide for you. Per-ticket keeps each diff small enough that the Spec axis has one clear spec to check against. Batching to the end of a branch catches interactions between tickets that the per-ticket passes each miss. If you are unsure, review per ticket and run one final pass against the branch point.
 
 **Can I trust the findings?**
 
@@ -90,12 +92,6 @@ No. It diffs `<fixed-point>...HEAD`. The three-dot form measures from the merge-
 
 ## Where it fits
 
-`code-review` is the review step near the tail of the build chain: `grill-with-docs → to-spec → to-tickets → implement → code-review → retro`. It also stands alone on any branch or PR you point it at.
+`code-review` is a review step after implementation and also stands alone on any committed branch or PR. In this repository, [feature-orchestrator](https://aihero.dev/skills-feature-orchestrator) coordinates larger deliveries and [scoped-git-workflow](https://aihero.dev/skills-scoped-git-workflow) prepares requested commits and pushes.
 
-- [implement](https://aihero.dev/skills-implement) is the closest neighbour. It drives the build and calls this skill as its own closing review before committing. [implement-spec](https://aihero.dev/skills-implement-spec) does the same once, over the whole integration branch.
-- [retro](https://aihero.dev/skills-retro) comes after it and tunes it. When a session shows the review missing a class of mistake, `retro` proposes the check or the `CODING_STANDARDS.md` rule the Standards axis then reads.
-- [pr](https://aihero.dev/skills-pr) writes the pull request body once the reviewed work goes up.
-- [to-spec](https://aihero.dev/skills-to-spec) and [to-tickets](https://aihero.dev/skills-to-tickets) produce the document the Spec axis checks against, so a vague spec makes that axis vague.
-- [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) is the whole-codebase counterpart, because this skill only looks at one diff.
-
-[ask-matt](https://aihero.dev/skills-ask-matt) routes across the whole set when you are unsure which skill the situation wants.
+For broader routing, see the [ask-matt page on aihero.dev](https://aihero.dev/skills-ask-matt). That router and the other skills mentioned above are documented outside this repository's promoted set.

@@ -13,5 +13,19 @@
     "engineering",
     "skills"
   ],
-  "skills": []
+  "skills": [
+    "./skills/engineering/code-review",
+    "./skills/engineering/decision-to-adr",
+    "./skills/engineering/feature-orchestrator",
+    "./skills/engineering/rails-architecture",
+    "./skills/engineering/rails-performance",
+    "./skills/engineering/ruby-style",
+    "./skills/engineering/ruby-testing",
+    "./skills/engineering/rust-architecture",
+    "./skills/engineering/rust-performance",
+    "./skills/engineering/rust-style",
+    "./skills/engineering/rust-testing",
+    "./skills/engineering/scoped-git-workflow",
+    "./skills/productivity/grill-with-jev"
+  ]
 }
