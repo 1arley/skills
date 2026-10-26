@@ -1,0 +1,17 @@
+{
+  "name": "1arley-skills",
+  "version": "0.0.1",
+  "description": "Skills autorais. Plug-and-play.",
+  "author": {
+    "name": "1arley",
+    "url": "https://github.com/1arley"
+  },
+  "homepage": "https://github.com/1arley/skills",
+  "repository": "https://github.com/1arley/skills",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "skills"
+  ],
+  "skills": []
+}

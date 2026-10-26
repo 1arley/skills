@@ -1,0 +1,7 @@
+[
+  {
+    "id": "ST-006",
+    "file": "scripts/decision-to-adr.mjs",
+    "reason": "The bundled CLI is the committed build output of src/ in this repository, pinned by SHA256SUMS. It is reviewable source, not an opaque payload, and it carries no runtime dependencies."
+  }
+]

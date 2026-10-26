@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    {"id":"jev-unconfirmed","input":"## Use SQLite?\nProvenance: jev\nOutcome: SQLite","assert":{"status":"proposed","warning":true,"provenance":"jev"}},
+    {"id":"human-confirmed","input":"## Use SQLite?\nProvenance: jev\nOutcome: SQLite","flags":["--confirmed"],"assert":{"status":"accepted"}},
+    {"id":"escalation","input":"## Cloud deployment?\nEscalated: unanswered","assert":{"adrCount":0,"openQuestion":true}},
+    {"id":"edited-adr","input":"## Replace storage?\nOutcome: PostgreSQL","existing":"edited","assert":{"preserveExisting":true,"generatedSibling":true}},
+    {"id":"topics","input":"- Store data locally\n- Use Markdown","assert":{"adrCount":2}},
+    {"id":"crlf-accent","input":"## Usar banco?\r\nOutcome: SQLite\r\nProvenance: user","assert":{"utf8":true,"provenance":"user"}},
+    {"id":"symlink","input":"## Write outside?\nOutcome: no","path":"outward-symlink","assert":{"exitCode":2,"outsideUnchanged":true}},
+    {"id":"idempotent","input":"## Use SQLite?\nOutcome: SQLite","repeat":2,"assert":{"secondRunWrites":0}}
+  ]
+}

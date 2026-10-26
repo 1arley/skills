@@ -1,0 +1,4 @@
+{
+  "shouldTrigger": ["turn this decision record into ADRs", "write ADRs from the grill session", "generate an ADR", "document these architecture decisions", "decision-record.md to docs/adr", "convert my JEV decisions into ADRs", "create numbered ADRs from this Q&A", "make ADRs from the architecture choices", "index these decisions as ADRs", "produce a MADR for each decision"],
+  "shouldNotTrigger": ["explain what an ADR is", "help me choose an architecture", "grill me about this plan", "review these existing ADRs", "write a product requirements document", "what does MADR stand for", "summarize this meeting", "create a decision tree", "update my README only", "compare SQLite and PostgreSQL"]
+}
