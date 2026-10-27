@@ -40,3 +40,9 @@ Claude Code marks these as user-invoked. The matching Codex invocation metadata 
 npx skills add 1arley/skills --skill <nome>
 npx skills add 1arley/skills --all
 ```
+
+Claude Code:
+
+```sh
+/plugin install 1arley-skills --marketplace 1arley/skills
+```
