@@ -23,6 +23,7 @@ Claude Code marks these as user-invoked. The matching Codex invocation metadata 
 
 - [code-review](./skills/engineering/code-review/SKILL.md): Revisa um diff segundo os padrões do repositório e a especificação de origem.
 - [feature-orchestrator](./skills/engineering/feature-orchestrator/SKILL.md): Coordena a entrega de features não triviais por etapas delimitadas.
+- [remotion-explainer](./skills/engineering/remotion-explainer/SKILL.md): Cria animações explicativas com Remotion: piloto, design system, sync de narração, variações e render.
 - [rails-architecture](./skills/engineering/rails-architecture/SKILL.md): Orienta onde colocar comportamento em aplicações Rails.
 - [rails-performance](./skills/engineering/rails-performance/SKILL.md): Investiga e melhora desempenho em aplicações Rails.
 - [ruby-style](./skills/engineering/ruby-style/SKILL.md): Orienta convenções práticas de Ruby para código e revisão.

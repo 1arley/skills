@@ -14,6 +14,7 @@ Reachable by the model or by direct invocation.
 
 - **[code-review](./code-review/SKILL.md)**: Review a diff against repository standards and its originating spec.
 - **[feature-orchestrator](./feature-orchestrator/SKILL.md)**: Coordinate nontrivial feature delivery through scoped stages.
+- **[remotion-explainer](./remotion-explainer/SKILL.md)**: Build explanation animations with Remotion from a pilot, design system, narration sync, and render profiles.
 - **[rails-architecture](./rails-architecture/SKILL.md)**: Place behavior across Rails models, services, POROs, jobs, and policies.
 - **[rails-performance](./rails-performance/SKILL.md)**: Investigate and improve performance in Rails applications.
 - **[ruby-style](./ruby-style/SKILL.md)**: Apply practical Ruby conventions to code and reviews.
