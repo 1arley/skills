@@ -402,6 +402,8 @@ async function main(): Promise<void> {
         // System One route (POST /v1/systemone); OpenCode Zen's chat-completions
         // adapter cannot express System One choice questions.
         if (["typesafe", "opencode-zen", "openjev"].includes(resolved!.provider)) {
+          const reservation = await reserveAttempt();
+          if (reservation !== "reserved") throw new BudgetStopError(reservation);
           const result = await generateSystemOne(resolved!, request, profile, context);
           if (result.usage) recordUsage(result.usage);
           return { value: result.round };
