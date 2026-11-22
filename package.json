@@ -13,5 +13,8 @@
     "engineering",
     "skills"
   ],
-  "private": true
+  "private": true,
+  "scripts": {
+    "version": "changeset version"
+  }
 }
