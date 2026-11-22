@@ -3,40 +3,40 @@ name: feature-orchestrator
 description: "Coordinate nontrivial software feature delivery through scoped agent stages, choosing cascade, incremental, prototype, risk-driven spiral, or formal-methods workflows. Use when implementation needs staged planning and delegation."
 ---
 
-# Orquestrar entrega de features
+# Feature Orchestration
 
-Use esta skill para levar uma feature de descoberta a entrega com etapas delegadas a subagentes. O agente principal é o orquestrador: mantém o estado aceito, escolhe a próxima tarefa, prepara o contexto de entrada, confere o resultado e conversa com o usuário nos pontos previstos pelo modelo.
+Use this skill to take a feature from discovery through delivery with delegated stages. The orchestrator owns the accepted state, chooses the next task, prepares its input context, checks the result, and talks with the user at the points required by the selected workflow.
 
-Para uma alteração trivial e autocontida, trabalhe diretamente sem impor este processo. Preserve instruções do repositório, escopo, permissões e convenções já existentes.
+For a trivial, self-contained change, work directly without imposing this process. Preserve the repository's instructions, scope, permissions, and conventions.
 
-## Escolha do fluxo e de quem decide
+## Choosing the workflow and decision owner
 
-1. Entenda o resultado desejado, critérios de aceite, restrições, prazo, riscos e quanto o escopo pode mudar. Consulte as instruções e o estado atual do repositório antes de planejar.
-2. Use o modelo escolhido pelo usuário. Se não houver escolha, recomende um dos cinco modelos em [workflow-models.md](references/workflow-models.md) e informe brevemente por quê. Separe a escolha do modelo de processo de quem decide questões em aberto.
-3. Registre quem decide: **usuário**, **Jev** ou **orquestrador**. No modo usuário, faça uma conversa curta para resolver decisões materiais. No modo orquestrador, decida questões reversíveis usando o repositório, os requisitos e o julgamento recomendado, expondo as decisões relevantes. No modo Jev, consulte uma interface Jev realmente disponível; use a skill `typesafe-ai` como orientação quando ela estiver instalada.
-4. A skill `typesafe-ai` descreve como construir software com TypeSafe e Jev; ela não garante que exista uma chamada interativa de Jev neste ambiente. Se não houver uma interface Jev acessível, não diga que consultou Jev. Para decisão material, informe a limitação e peça autorização para o orquestrador decidir ou para o usuário decidir. Para uma preferência reversível e de baixo impacto, aplique o fallback que o usuário autorizou e registre-o.
+1. Understand the desired outcome, acceptance criteria, constraints, deadline, risks, and how much the scope may change. Check the repository instructions and current state before planning.
+2. Use the workflow chosen by the user. If they have not chosen one, recommend one of the five models in [workflow-models.md](references/workflow-models.md) and briefly explain why. Keep the workflow choice separate from who decides open questions.
+3. Record who decides: **the user**, **Jev**, or **the orchestrator**. In user mode, have a short conversation to resolve material decisions. In orchestrator mode, decide reversible questions using the repository, requirements, and recommended judgment, and expose the relevant decisions. In Jev mode, use a Jev interface that is actually available; use the `typesafe-ai` skill as guidance when installed.
+4. The `typesafe-ai` skill describes how to build software with TypeSafe and Jev; it does not guarantee that an interactive Jev call is available in this environment. If no Jev interface is accessible, do not claim to have consulted Jev. For a material decision, explain the limitation and ask whether the orchestrator or the user should decide. For a reversible, low-impact preference, use the fallback the user authorized and record it.
 
-## Ciclo de trabalho
+## Work cycle
 
-Siga as etapas apropriadas ao modelo:
+Follow the stages that apply to the selected model:
 
-1. **Pesquisa e grilling:** delegue a descoberta de contexto, requisitos, incógnitas e perguntas que mudariam a solução. O orquestrador conduz a conversa com o usuário quando a política de decisão pedir.
-2. **Planejamento:** delegue escopo, critérios de aceite, fatias de entrega, dependências, riscos e plano de verificação.
-3. **Arquitetura e modelagem:** delegue a solução técnica e seus contratos, dados, interfaces e impactos no sistema existente.
-4. **Construção:** delegue uma implementação delimitada ao plano aceito.
-5. **Verificação:** delegue testes e revisão independente conforme o modelo; compare evidências com os critérios de aceite.
-6. **Entrega:** delegue a preparação do resumo de entrega e itens pendentes; o orquestrador confere e apresenta o resultado ao usuário.
+1. **Research and grilling:** delegate discovery of context, requirements, unknowns, and questions that could change the solution. The orchestrator leads the user conversation when the decision policy calls for it.
+2. **Planning:** delegate scope, acceptance criteria, delivery slices, dependencies, risks, and verification planning.
+3. **Architecture and modeling:** delegate the technical approach, contracts, data, interfaces, and system impacts.
+4. **Building:** delegate implementation bounded by the accepted plan.
+5. **Verification:** delegate testing and independent review as appropriate to the model; compare evidence with the acceptance criteria.
+6. **Delivery:** delegate preparation of the delivery summary and open items; the orchestrator checks and presents the result to the user.
 
-Cada etapa que se aplica deve ter um subagente responsável, com entrada e saída delimitadas. Só inicie a etapa seguinte depois de conferir e aceitar o artefato anterior. Paralelize apenas trabalho independente e sem conflito de escrita. Se o ambiente não oferecer subagentes, informe isso e execute os mesmos papéis sequencialmente, mantendo os handoffs explícitos; não invente delegações.
+Each applicable stage must have a responsible subagent, with bounded inputs and outputs. Start the next stage only after checking and accepting the previous artifact. Parallelize only independent work that has no write conflicts. If subagents are unavailable, explain that and perform the same roles sequentially with explicit handoffs; do not invent delegations.
 
-Use um pacote curto por tarefa, conforme [delegation-protocol.md](references/delegation-protocol.md). Passe os artefatos relevantes e um resumo das decisões aceitas; não despeje a conversa inteira nem peça ao subagente que reconstrua decisões anteriores. O orquestrador mantém uma fonte de verdade para modelo, escopo, decisões, riscos, estado da etapa, evidências e próxima tarefa.
+Use a short task packet based on [delegation-protocol.md](references/delegation-protocol.md). Include relevant artifacts and a summary of accepted decisions; do not dump the whole conversation or ask a subagent to reconstruct prior decisions. Keep a concise accepted-state summary in the conversation: workflow, scope, decisions, risks, current stage, evidence, and next task.
 
-Após cada retorno, confira o trabalho no repositório ou contra os artefatos de entrada, registre o que foi aceito e o que continua aberto e só então prepare o próximo pacote. Um subagente pode recomendar mudanças, mas não pode ampliar sozinho o escopo, ignorar uma aprovação requerida ou declarar conformidade regulatória.
+After each response, check the work in the repository or against its input artifacts, update the summary with what was accepted and what remains open, and only then prepare the next packet. Send each subagent only the relevant part of the summary. Persist the summary in a repository artifact only when the user asks or an existing convention defines where it belongs. A subagent may recommend changes, but cannot expand scope on its own, bypass a required approval, or claim regulatory compliance.
 
-## Mudanças e encerramento
+## Changes and closeout
 
-Aceite mudanças de direção durante o processo. Registre a decisão, avalie quais requisitos e artefatos ela afeta e reabra somente as etapas impactadas. No cascata, uma mudança material reabre planejamento e pede nova aprovação segundo a política escolhida. Nos modelos incremental e espiral, incorpore-a na próxima fatia ou ciclo. Na prototipação, mantenha claro o que é descartável. No método formal, atualize especificações e obrigações de prova afetadas antes de tratar a implementação como verificada.
+Accept changes in direction during the process. Record the decision, assess which requirements and artifacts it affects, and reopen only the affected stages. In cascade, a material change reopens planning and requires approval again according to the chosen decision policy. In incremental and spiral workflows, incorporate the change in the next slice or cycle. In prototyping, keep clear which work is disposable. In the formal method, update affected specifications and proof obligations before treating the implementation as verified.
 
-Ao concluir, apresente o que foi entregue, arquivos ou artefatos relevantes, verificações realizadas e seus resultados, decisões importantes e riscos ou pendências. Diferencie uma prova de conceito de software pronto para produção e evidência formal de uma alegação de certificação. Não declare teste, prova, revisão, aprovação ou consulta a Jev que não tenha ocorrido.
+At completion, report what was delivered, relevant files or artifacts, checks performed and their results, important decisions, and risks or open items. Distinguish a proof of concept from production-ready software, and formal evidence from a claim of certification. Do not claim a test, proof, review, approval, or Jev consultation that did not happen.
 
-Leia [workflow-models.md](references/workflow-models.md) para selecionar e executar o modelo. Leia [delegation-protocol.md](references/delegation-protocol.md) ao criar handoffs ou coordenar subagentes.
+Read [workflow-models.md](references/workflow-models.md) to select and run a model. Read [delegation-protocol.md](references/delegation-protocol.md) when creating handoffs or coordinating subagents.

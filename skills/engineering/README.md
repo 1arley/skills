@@ -4,8 +4,9 @@ Skills for daily code work.
 
 ## User-invoked
 
-Claude Code marks this as user-invoked. The matching Codex invocation metadata is not present yet.
+These skills require explicit invocation by the human in Claude Code and Codex.
 
+- **[ask-matt](./ask-matt/SKILL.md)**: Routes a situation to the right skill or short workflow in this repository.
 - **[decision-to-adr](./decision-to-adr/SKILL.md)**: Convert decision records into numbered ADRs while preserving provenance.
 
 ## Model-invoked

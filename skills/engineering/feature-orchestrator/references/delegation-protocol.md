@@ -1,20 +1,20 @@
-# Protocolo de delegação
+# Delegation protocol
 
-Pacote curto por tarefa. Inclua:
+Use a short task packet. Include:
 
-- **Etapa**: nome da etapa (pesquisa, planejamento, arquitetura, construção, verificação, entrega)
-- **Objetivo**: resultado esperado em uma frase
-- **Entradas**: artefatos relevantes (arquivos, decisões aceitas, restrições)
-- **Critérios de aceite**: como conferir o resultado
-- **Saída esperada**: formato do artefato de retorno
-- **Limites**: o que não fazer (escopo, arquivos, decisões)
+- **Stage**: stage name (research, planning, architecture, building, verification, delivery)
+- **Objective**: expected result in one sentence
+- **Inputs**: relevant artifacts, accepted decisions, and constraints
+- **Acceptance criteria**: how to check the result
+- **Expected output**: format of the returned artifact
+- **Limits**: what not to do, including scope, files, and decisions
 
-## Regras
+## Rules
 
-- Passe resumo das decisões aceitas; não despeje a conversa inteira.
-- Não peça ao subagente que reconstrua decisões anteriores.
-- Orquestrador mantém fonte de verdade: modelo, escopo, decisões, riscos, estado da etapa, evidências, próxima tarefa.
-- Subagente pode recomendar mudanças, mas não amplia sozinho o escopo, não ignora aprovação requerida, não declara conformidade regulatória.
-- Após retorno, confira no repositório ou contra artefatos de entrada; registre aceito e aberto; só então prepare próximo pacote.
-- Paralelize apenas trabalho independente e sem conflito de escrita.
-- Sem subagentes: execute os mesmos papéis sequencialmente, handoffs explícitos.
+- Include a summary of accepted decisions. Do not dump the entire conversation.
+- Do not ask a subagent to reconstruct prior decisions.
+- The orchestrator maintains the source of truth: workflow, scope, decisions, risks, stage status, evidence, and next task.
+- A subagent may recommend changes, but cannot expand scope on its own, bypass a required approval, or claim regulatory compliance.
+- After each response, check the work in the repository or against the input artifacts. Record what was accepted and what remains open, then prepare the next packet.
+- Parallelize only independent work with no write conflicts.
+- If subagents are unavailable, perform the same roles sequentially and keep the handoffs explicit.

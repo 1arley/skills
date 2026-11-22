@@ -14,8 +14,9 @@ Catálogo de skills autorais. Estrutura baseada no layout do [mattpocock/skills]
 
 ### User-invoked
 
-Claude Code marks these as user-invoked. The matching Codex invocation metadata is not present yet.
+These skills require explicit invocation by the human in Claude Code and Codex.
 
+- [ask-matt](./skills/engineering/ask-matt/SKILL.md): Mapeia a situação para a skill ou sequência adequada neste repositório.
 - [decision-to-adr](./skills/engineering/decision-to-adr/SKILL.md): Converte registros de decisão em ADRs numerados, preservando a proveniência.
 - [grill-with-jev](./skills/productivity/grill-with-jev/SKILL.md): Conduz decisões em rodadas com respostas do JEV validadas por schema.
 

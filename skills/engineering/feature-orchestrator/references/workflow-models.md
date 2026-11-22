@@ -1,23 +1,13 @@
-# Modelos de fluxo de trabalho
+# Workflow models
 
-Cinco modelos disponíveis. Escolha pelo risco e incerteza da feature.
+Choose the first applicable model in the table's priority order. This resolves conflicting signals while allowing justified adjustments for the context.
 
-| Modelo | Quando usar | Características |
-|--------|-------------|-----------------|
-| **Cascata** | Requisitos estáveis, baixa incerteza | Etapas sequenciais, aprovação por etapa, mudança material reabre planejamento |
-| **Incremental** | Escopo pode mudar, entrega por fatias | Cada fatia é entregável; incorpora mudanças na próxima fatia |
-| **Prototipação** | Solução incerta, explorar viabilidade | Protótipos descartáveis; deixar claro o que é descartável |
-| **Espiral (risk-driven)** | Alto risco, múltiplas incógnitas | Ciclos com análise de risco; incorpora mudanças no próximo ciclo |
-| **Método formal** | Domínio regulado, certificação | Especificações + obrigações de prova; atualizar specs antes de tratar implementação como verificada |
+| Priority and model | When to use | Stage rhythm | Changes and progression |
+|--------------------|-------------|--------------|-------------------------|
+| **1. Formal methods** | There are regulatory, certification, or formal-proof obligations | Specify before building and tie verification evidence to relevant changes | Advance when the evidence and applicable obligations are satisfied. Do not claim certification without evidence. |
+| **2. Spiral (risk-driven)** | There is high technical risk or several significant unknowns | Repeat risk analysis, planning, architecture, building, and verification in cycles | Address the highest risk first. Move to delivery when the remaining risk is accepted. |
+| **3. Prototyping** | The solution's feasibility is unknown | Repeat research, architecture, building, and verification until there is evidence of feasibility | Discard the prototype. Stop when the question is answered, or plan production as separate work. |
+| **4. Incremental** | The scope is expected to evolve or delivery can be split into useful slices | Research and plan the start; repeat building, verification, and delivery for each slice, including architecture when needed | Put new changes into future slices. Check each slice before starting the next. |
+| **5. Cascade** | Requirements are stable, with low uncertainty and risk | Move once through research, planning, architecture, building, verification, and delivery | Require approval between stages. A material change reopens planning. |
 
-## Seleção rápida
-
-- Requisitos claros e estáveis → Cascata
-- Escopo evolutivo, entrega contínua → Incremental
-- Viabilidade desconhecida → Prototipação
-- Alto risco técnico → Espiral
-- Regulação/certificação → Método formal
-
-## Execução
-
-Siga as etapas da skill conforme o modelo escolhido. Cada etapa que se aplica tem subagente responsável, com entrada e saída delimitadas. Só inicie a etapa seguinte após conferir e aceitar o artefato anterior.
+The chosen model guides the cycle but does not change the shared handoff protocol: each delegated task has an objective, inputs, acceptance criteria, expected output, and limits. Check and accept each stage's artifact before advancing. Adjust the rhythm when the context justifies it and record why in the accepted-state summary.

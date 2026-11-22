@@ -1,0 +1,5 @@
+interface:
+  display_name: "Decision to ADR"
+  short_description: "Publish settled decisions as ADRs"
+policy:
+  allow_implicit_invocation: false

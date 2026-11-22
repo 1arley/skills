@@ -1,0 +1,5 @@
+interface:
+  display_name: "Grill with JEV"
+  short_description: "Resolve options with JEV in guided rounds"
+policy:
+  allow_implicit_invocation: false

@@ -4,7 +4,7 @@ General workflow tools, not specific to code.
 
 ## User-invoked
 
-Claude Code marks this as user-invoked. The matching Codex invocation metadata is not present yet.
+These skills require explicit invocation by the human in Claude Code and Codex.
 
 - **[grill-with-jev](./grill-with-jev/SKILL.md)**: Grill a plan in rounds where JEV returns schema-validated decisions.
 

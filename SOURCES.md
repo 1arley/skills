@@ -1,6 +1,6 @@
 # Sources and selection
 
-Inventário feito em 2026-10-26: foram consultados os 59 repositórios GitHub da conta `1arley` e as raízes locais `~/.agents/skills` e `~/.codex/skills`. A lista abaixo corresponde aos 20 pacotes que você manteve na pasta e identificou como seus. Essa seleção no próprio diretório é a fonte de verdade; não restaure pacotes removidos.
+Inventário feito em 2026-10-26: foram consultados os 59 repositórios GitHub da conta `1arley` e as raízes locais `~/.agents/skills` e `~/.codex/skills`. A lista abaixo corresponde aos 21 pacotes que você manteve na pasta e identificou como seus. Essa seleção no próprio diretório é a fonte de verdade; só restaure pacotes removidos com autorização explícita do usuário.
 
 ## Skills em repositórios
 
@@ -15,6 +15,7 @@ Inventário feito em 2026-10-26: foram consultados os 59 repositórios GitHub da
 | `rust-architecture`, `rust-performance`, `rust-style`, `rust-testing` | [1arley/rust-skills](https://github.com/1arley/rust-skills) | `4120801` | Não declarada |
 | `rails-architecture`, `rails-performance`, `ruby-style`, `ruby-testing` | [1arley/ruby-rails-skills](https://github.com/1arley/ruby-rails-skills) | `5879d0a` | Não declarada |
 | `decision-to-adr` | [1arley/decision-to-adr](https://github.com/1arley/decision-to-adr) | `131abf1` | MIT, incluída |
+| `ask-matt` | [mattpocock/skills](https://github.com/mattpocock/skills) | `abeeaf9` | MIT |
 | `grill-with-jev` | [1arley/grill-with-jev](https://github.com/1arley/grill-with-jev) | `250ae4f` | MIT, incluída |
 | `jev-advisor-gateway-conventions` | [1arley/jev-advisor-gateway](https://github.com/1arley/jev-advisor-gateway) | `5f9cbac` | Licença da origem incluída |
 | `code-review` | [1arley/animesice](https://github.com/1arley/animesice) | `1d27e6a` | Licença da origem incluída |

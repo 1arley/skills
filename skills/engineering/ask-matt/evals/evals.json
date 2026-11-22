@@ -1,0 +1,21 @@
+{
+  "tasks": [
+    {"id":"nontrivial-feature","input":"I need to deliver a feature with dependent planning, implementation, and verification work. Which skill should coordinate it?","assert":{"route":"feature-orchestrator"}},
+    {"id":"diff-review","input":"Can you check this pull request against the repository standards and the original spec?","assert":{"route":"code-review"}},
+    {"id":"publish-settled-decision","input":"I have a settled architecture decision record and want numbered ADRs written from it.","assert":{"route":"decision-to-adr","tellUserToInvokeDirectly":true}},
+    {"id":"jev-decides","input":"I want JEV to choose among these design options in validated rounds.","assert":{"route":"grill-with-jev","tellUserToInvokeDirectly":true}},
+    {"id":"commit-and-push","input":"The implementation is done. Commit these changes and push them to the current remote.","assert":{"route":"scoped-git-workflow"}},
+    {"id":"remotion-animation","input":"Make a narrated technical explainer animation in Remotion.","assert":{"route":"remotion-explainer"}},
+    {"id":"rails-placement","input":"Where should this behavior live in my Rails app?","assert":{"route":"rails-architecture"}},
+    {"id":"rails-slow-query","input":"This Rails endpoint is slow and repeats database queries. Which skill should investigate it?","assert":{"route":"rails-performance"}},
+    {"id":"ruby-conventions","input":"I am writing Ruby and want guidance on idiomatic naming and method structure.","assert":{"route":"ruby-style"}},
+    {"id":"ruby-tests","input":"Help me debug an order-dependent failure in an RSpec suite.","assert":{"route":"ruby-testing"}},
+    {"id":"rust-module-design","input":"I need to choose crate and module structure and design a public API in Rust.","assert":{"route":"rust-architecture"}},
+    {"id":"rust-performance","input":"My Rust program has high allocation volume. Which skill should guide measurement and optimization?","assert":{"route":"rust-performance"}},
+    {"id":"rust-conventions","input":"Review my Rust code for idiomatic ownership and error handling conventions.","assert":{"route":"rust-style"}},
+    {"id":"rust-tests","input":"Help design an async integration test for my Rust crate.","assert":{"route":"rust-testing"}},
+    {"id":"phase-boundary","input":"I have finished a QA phase and need to choose whether to continue, hand off, or compact the session.","assert":{"route":"PHASE-BOUNDARIES.md"}},
+    {"id":"skill-already-chosen","input":"I know I need ruby-testing. Which skill should I invoke?","assert":{"route":"ruby-testing","invokeDirectly":true}},
+    {"id":"outside-promoted-set","input":"Which skill in this repository should build an AWS Bedrock agent?","assert":{"route":null}}
+  ]
+}
