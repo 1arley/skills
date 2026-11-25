@@ -78,3 +78,74 @@ test("a schema retry is stopped before it can cross the session token ceiling", 
     await new Promise<void>(resolve => server.close(() => resolve()));
   }
 });
+
+test("TypeSafe --no-tax skips the local rate-card requirement but still uses the session reservation", async () => {
+  let requests = 0;
+  let sentBody = "";
+  const server = createServer((req, res) => {
+    requests++;
+    req.on("data", chunk => sentBody += chunk);
+    req.on("end", () => {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ answers: { Q1: { type: "choice", choice: "aceitar", confidence: 0.95, probabilities: { aceitar: 0.95, ajustar: 0.03, escalar: 0.02 } } }, usage: { inputTokens: 20, outputTokens: 0, totalTokens: 20 } }));
+    });
+  });
+  await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address(); assert.ok(address && typeof address === "object");
+  const endpoint = `http://127.0.0.1:${address.port}/v1`;
+  const project = await mkdtemp(join(tmpdir(), "jev-typesafe-no-tax-"));
+  const home = await mkdtemp(join(tmpdir(), "jev-home-"));
+  try {
+    await mkdir(join(home, ".config", "jev"), { recursive: true });
+    await writeFile(join(home, ".config", "jev", "config.json"), JSON.stringify({ provider: "typesafe", apiKey: "local-canary", model: "jev-latest", baseUrl: endpoint, customBaseUrlConfirmed: endpoint }));
+    const request = (round: number, sessionId: string) => JSON.stringify({ round, sessionId, questions: [{ questionId: "Q1", title: "Choice", body: "Choose an option", recommendation: "Choose local-canary", dependsOn: [], risks: [] }] });
+    const run = (round: number, sessionId: string, flags: string[]) => new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+      const child = spawn(process.execPath, [cli, script, ...flags], {
+        cwd: project, env: { PATH: process.env.PATH, HOME: home, JEV_PROVIDER: "typesafe", JEV_BASE_URL: endpoint },
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      let stdout = "", stderr = "";
+      child.stdout.on("data", chunk => stdout += chunk); child.stderr.on("data", chunk => stderr += chunk);
+      child.on("error", reject); child.on("close", () => resolve({ stdout, stderr }));
+      child.stdin.end(request(round, sessionId));
+    });
+    const limited = await run(1, "requires-pricing", []);
+    assert.equal(JSON.parse(limited.stdout).status, "pricing-required");
+    assert.equal(requests, 0);
+    const unpriced = await run(1, "no-tax-unpriced", ["--no-tax"]);
+    assert.equal(JSON.parse(unpriced.stdout).status, "ok", unpriced.stderr);
+    assert.equal(JSON.parse(unpriced.stdout).usage.costUsd, null);
+    assert.equal(requests, 1);
+    sentBody = "";
+    await writeFile(join(home, ".config", "jev", "config.json"), JSON.stringify({ provider: "typesafe", apiKey: "local-canary", model: "jev-latest", baseUrl: endpoint, customBaseUrlConfirmed: endpoint,
+      inputUsdPerMillion: 0, outputUsdPerMillion: 0, maxSessionCostUsd: 0.5 }));
+    const zeroRated = await run(1, "no-tax-zero-rated", ["--no-tax"]);
+    assert.equal(JSON.parse(zeroRated.stdout).usage.costUsd, null);
+    assert.equal(requests, 2);
+    sentBody = "";
+    await writeFile(join(home, ".config", "jev", "config.json"), JSON.stringify({ provider: "typesafe", apiKey: "local-canary", model: "jev-latest", baseUrl: endpoint, customBaseUrlConfirmed: endpoint,
+      inputUsdPerMillion: 1000, outputUsdPerMillion: 1000 }));
+    const unlimited = await run(1, "no-tax-priced", ["--no-tax"]);
+    assert.equal(JSON.parse(unlimited.stdout).status, "ok", unlimited.stderr);
+    assert.ok(JSON.parse(unlimited.stdout).usage.costUsd > 0);
+    assert.equal(requests, 3);
+    assert.equal(sentBody.includes("local-canary"), false);
+    const audit = (await readFile(join(project, ".grill", "no-tax-priced.jsonl"), "utf8")).trim().split("\n").map(line => JSON.parse(line));
+    const reservation = audit.find(record => record.event === "reservation");
+    assert.ok(reservation);
+    assert.ok(reservation.reservationTokens >= Buffer.byteLength(sentBody) + 1280);
+    assert.ok(audit.some(record => record.event === "reservation" && record.reservationCostUsd > 0));
+    const settled = audit.find(record => record.actualCostUsd !== undefined);
+    assert.ok(settled && settled.actualCostUsd > 0);
+    const maxCost = reservation.reservationCostUsd + settled.actualCostUsd / 2;
+    await writeFile(join(home, ".config", "jev", "config.json"), JSON.stringify({ provider: "typesafe", apiKey: "local-canary", model: "jev-latest", baseUrl: endpoint, customBaseUrlConfirmed: endpoint,
+      inputUsdPerMillion: 1000, outputUsdPerMillion: 1000, maxSessionCostUsd: maxCost }));
+
+    const capped = await run(2, "no-tax-priced", []);
+    assert.equal(JSON.parse(capped.stdout).status, "cost-limit");
+    assert.equal(requests, 3);
+  } finally {
+    await rm(project, { recursive: true, force: true }); await rm(home, { recursive: true, force: true });
+    await new Promise<void>(resolve => server.close(() => resolve()));
+  }
+});

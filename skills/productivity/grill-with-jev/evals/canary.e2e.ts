@@ -52,7 +52,10 @@ test("provider output, errors, transcript, and audit log never expose a canary k
     const audit = await readFile(join(dir, ".grill", "canary-session.jsonl"), "utf8");
     const failed = await invoke(2, "force-provider-error");
     assert.equal(failed.output.status, "provider-error");
-    assert.equal(`${result.stdout}${result.stderr}${failed.stdout}${failed.stderr}${audit}`.includes(canary), false);
+    assert.match(failed.output.detail, /HTTP 500/);
+    const failedAudit = await readFile(join(dir, ".grill", "canary-session.jsonl"), "utf8");
+    assert.match(failedAudit, /HTTP 500/);
+    assert.equal(`${result.stdout}${result.stderr}${failed.stdout}${failed.stderr}${audit}${failedAudit}`.includes(canary), false);
     assert.match(result.stdout, /\[REDACTED\]/);
   } finally {
     await rm(dir, { recursive: true, force: true }); await rm(home, { recursive: true, force: true });

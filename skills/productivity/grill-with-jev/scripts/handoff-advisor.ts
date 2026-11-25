@@ -7,7 +7,7 @@
 // multi-call advisor sessions ever need a hard cap.
 import { z } from "zod";
 import { findProviderKey } from "./find-provider-key.js";
-import { estimatedTokens, pricing, ProviderRequestError, type TokenUsage } from "./ask-jev.js";
+import { estimatedTokens, pricing, ProviderRequestError, providerErrorDetail, safeTokenUsage, type TokenUsage } from "./ask-jev.js";
 import { redact } from "./redact.js";
 
 export const inputSchema = z.object({
@@ -91,6 +91,7 @@ async function main(): Promise<void> {
   } catch { process.stdout.write('{"status":"invalid-request"}\n'); process.exitCode = 2; return; }
   const args = process.argv.slice(2);
   const mock = args.includes("--mock");
+  const noTax = args.includes("--no-tax");
   const write = (output: { status: string; [key: string]: unknown }) => {
     process.stdout.write(`${JSON.stringify(redact(output, secrets))}\n`);
   };
@@ -102,17 +103,21 @@ async function main(): Promise<void> {
   if (lookup.consentRequired) { write({ status: "consent-required", consent: lookup.consentRequired, sessionId }); process.exitCode = 2; return; }
   if (!lookup.resolved) { write({ status: "no-provider-key", sessionId }); process.exitCode = 2; return; }
   const resolved = lookup.resolved;
-  if (["typesafe", "opencode-zen", "laya", "jiwo"].includes(resolved.provider) && !resolved.baseUrl) {
+  if (!["typesafe", "opencode-zen", "openjev", "laya", "jiwo"].includes(resolved.provider)) {
+    write({ status: "error", reason: "advisor requires a System One provider", provider: resolved.provider, sessionId });
+    process.exitCode = 2; return;
+  }
+  if (["typesafe", "opencode-zen", "openjev"].includes(resolved.provider) && !resolved.baseUrl) {
     write({ status: "endpoint-required", provider: resolved.provider, model: resolved.model, sessionId });
     process.exitCode = 2; return;
   }
   const sessionPrice = ["ollama", "lm-studio", "laya", "jiwo"].includes(resolved.provider) ? undefined : pricing(lookup.config, process.env);
-  if (!sessionPrice) { write({ status: "pricing-required", sessionId }); process.exitCode = 2; return; }
+  if (!noTax && !sessionPrice) { write({ status: "pricing-required", sessionId }); process.exitCode = 2; return; }
   const { state, body } = handoffQuestion(input);
   body.model = resolved.model ?? "";
   const inputEstimate = estimatedTokens(state) + 256;
-  if (inputEstimate * sessionPrice.inputRate + 256 * sessionPrice.outputRate > sessionPrice.maxUsd * 1_000_000) {
-    write({ status: "cost-limit", maxUsd: sessionPrice.maxUsd, sessionId }); process.exitCode = 2; return;
+  if (!noTax && inputEstimate * sessionPrice!.inputRate + 256 * sessionPrice!.outputRate > sessionPrice!.maxUsd * 1_000_000) {
+    write({ status: "cost-limit", maxUsd: sessionPrice!.maxUsd, sessionId }); process.exitCode = 2; return;
   }
   let usage: TokenUsage = {};
   try {
@@ -121,12 +126,12 @@ async function main(): Promise<void> {
       headers: { ...(resolved.key ? { authorization: `Bearer ${resolved.key}` } : {}), "content-type": "application/json" },
       body: JSON.stringify(body),
     } satisfies Record<string, unknown>);
-    if (!response.ok) throw new ProviderRequestError();
+    if (!response.ok) throw new ProviderRequestError(providerErrorDetail({ statusCode: response.status }));
     const payload = await response.json() as {
       answers?: Record<string, { type: string; choice: string; confidence: number; probabilities: Record<string, number> }>;
-      usage?: TokenUsage;
+      usage?: unknown;
     };
-    usage = payload.usage ?? {};
+    usage = safeTokenUsage(payload.usage);
     const answer = payload.answers?.[questionId];
     if (answer?.type !== "choice") throw new ProviderRequestError();
     const top = Object.entries(answer.probabilities).sort((left, right) => right[1] - left[1]).slice(0, 2)
@@ -137,8 +142,8 @@ async function main(): Promise<void> {
     }
     if (!input.catalog.some(entry => entry.name === answer.choice)) throw new ProviderRequestError();
     write({ status: "next_skill", capability: answer.choice, additional_work: "unassessed", provenance: "jev", confidence: answer.confidence, probabilities: top, sessionId, model: resolved.model, usage });
-  } catch {
-    const output: HandoffOutput = { status: "error", reason: "provider request failed", sessionId, model: resolved.model, usage };
+  } catch (error) {
+    const output: HandoffOutput = { status: "error", reason: providerErrorDetail(error), sessionId, model: resolved.model, usage };
     write(output);
     process.exitCode = 2;
   }

@@ -144,8 +144,8 @@ export async function findProviderKey(options: {
 
   const processKeyProvider = providerOrder.find(name => providerKeys[name].some(key => env[key]));
   const dotenvKeyProvider = providerOrder.find(name => providerKeys[name].some(key => dotenv[key]));
-  const rawProvider = env.JEV_PROVIDER?.toLowerCase() ?? processKeyProvider
-    ?? dotenv.JEV_PROVIDER?.toLowerCase() ?? dotenvKeyProvider ?? config.provider?.toLowerCase();
+  const rawProvider = env.JEV_PROVIDER?.toLowerCase() ?? dotenv.JEV_PROVIDER?.toLowerCase()
+    ?? config.provider?.toLowerCase() ?? processKeyProvider ?? dotenvKeyProvider;
   const provider = normalizeProvider(rawProvider);
   const matchingConfig = config.provider?.toLowerCase() === provider;
   const matchingKeyConfig = (config.apiKeyProvider ?? config.provider)?.toLowerCase() === provider;

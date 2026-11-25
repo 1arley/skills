@@ -4,13 +4,15 @@
 
 JEV decides from the supplied profile and project context; it does not research. A real user confirms the final decision record before work begins unless the invocation explicitly says `--autonomous`.
 
+Pass `--no-tax` when you want to skip the skill's local token, cost/rate-card, and maximum-round limits. Provider billing, request/context limits, and provider-side rate limits still apply.
+
 ## When to reach for it
 
 You invoke this by typing `/grill-with-jev`, and the agent will not reach for it on its own. Use it when you explicitly want JEV to decide among design options. For a grilling session led directly by you, use [grilling](https://aihero.dev/skills-grilling).
 
 ## Prerequisites
 
-A supported JEV provider and current model configuration are required for a live call. Each call can spend API credits. The TypeSafe path in this repository currently does not reserve its budget before the request, so do not rely on its configured cost ceiling to prevent an overage.
+A supported JEV provider and current model configuration are required for a live call. Each call can spend API credits. TypeSafe calls reserve against the configured local budget before sending; estimates depend on the rate card being current.
 
 ## A settled decision tree
 
@@ -29,6 +31,10 @@ The human answers escalations, consent and budget questions, or corrections. The
 **Can dependent questions go in the same round?**
 
 No. The next question waits for a settled answer to its dependency.
+
+**Does `--no-tax` remove the provider's own limits?**
+
+No. It skips local usage ceilings and pricing setup; TypeSafe or another provider can still charge for requests and reject them at its own request-size or rate limits.
 
 ## It's working if
 

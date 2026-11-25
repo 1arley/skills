@@ -9,8 +9,8 @@ const packageDir = new URL("..", import.meta.url).pathname;
 const cli = join(packageDir, "node_modules", "tsx", "dist", "cli.mjs");
 const script = join(packageDir, "scripts", "ask-jev.ts");
 const baseEnv = (home: string, extra: NodeJS.ProcessEnv = {}) => ({ PATH: process.env.PATH, HOME: home, ...extra });
-function run(cwd: string, home: string, request: unknown, extra: NodeJS.ProcessEnv = {}, mock = true) {
-  return spawnSync(process.execPath, [cli, script, ...(mock ? ["--mock"] : []), "--session", "eval-session"], {
+function run(cwd: string, home: string, request: unknown, extra: NodeJS.ProcessEnv = {}, mock = true, flags: string[] = []) {
+  return spawnSync(process.execPath, [cli, script, ...(mock ? ["--mock"] : []), ...flags, "--session", "eval-session"], {
     cwd, env: baseEnv(home, extra), input: JSON.stringify(request), encoding: "utf8", timeout: 15000,
   });
 }
@@ -62,6 +62,20 @@ test("mock escalates security topics, and configured round/token ceilings stop f
       cwd: dir, env: baseEnv(home), input: JSON.stringify({ round: 2, sessionId: "limit-session", questions: [question("Q3")] }), encoding: "utf8", timeout: 15000,
     });
     assert.equal(JSON.parse(tokenLimit.stdout).status, "token-limit");
+  } finally { await rm(dir, { recursive: true, force: true }); await rm(home, { recursive: true, force: true }); }
+});
+
+test("--no-tax bypasses local token and round ceilings but keeps round order", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "jev-no-tax-"));
+  const home = await mkdtemp(join(tmpdir(), "jev-home-"));
+  const env = { JEV_MAX_ROUNDS: "1", JEV_MAX_SESSION_TOKENS: "1" };
+  try {
+    const first = run(dir, home, { round: 1, sessionId: "no-tax-session", questions: [question("Q1")] }, env, true, ["--no-tax"]);
+    assert.equal(JSON.parse(first.stdout).status, "ok");
+    const second = run(dir, home, { round: 2, sessionId: "no-tax-session", questions: [question("Q2")] }, env, true, ["--no-tax"]);
+    assert.equal(JSON.parse(second.stdout).status, "ok");
+    const skipped = run(dir, home, { round: 4, sessionId: "no-tax-session", questions: [question("Q4")] }, env, true, ["--no-tax"]);
+    assert.equal(JSON.parse(skipped.stdout).status, "round-sequence");
   } finally { await rm(dir, { recursive: true, force: true }); await rm(home, { recursive: true, force: true }); }
 });
 

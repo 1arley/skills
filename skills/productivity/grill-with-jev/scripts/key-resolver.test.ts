@@ -21,15 +21,18 @@ test("process configuration wins and key reports remain masked", async () => {
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
-test("allowlisted process keys take precedence over dotenv and saved provider choices", async () => {
+test("saved provider choice beats unrelated keys while explicit JEV_PROVIDER wins", async () => {
   const dir = await mkdtemp(join(tmpdir(), "jev-provider-priority-"));
   try {
     const configPath = join(dir, "config.json");
-    await writeFile(configPath, JSON.stringify({ provider: "anthropic", apiKey: "saved-secret" }));
-    const found = await findProviderKey({ cwd: dir, homeDir: dir, configPath, env: { OPENAI_API_KEY: "process-secret" }, dotenvValues: { ANTHROPIC_API_KEY: "dotenv-secret" } });
-    assert.equal(found.resolved?.provider, "openai");
-    assert.equal(found.resolved?.key, "process-secret");
-    assert.equal(found.resolved?.report.source, "env");
+    await writeFile(configPath, JSON.stringify({ provider: "typesafe", dotenvConsent: true, apiKey: "saved-secret" }));
+    const configured = await findProviderKey({ cwd: dir, homeDir: dir, configPath, env: { OPENAI_API_KEY: "process-secret" }, dotenvValues: { TYPESAFE_API_KEY: "dotenv-secret" } });
+    assert.equal(configured.resolved?.provider, "typesafe");
+    assert.equal(configured.resolved?.key, "dotenv-secret");
+    assert.equal(configured.resolved?.report.source, "dotenv");
+    const explicit = await findProviderKey({ cwd: dir, homeDir: dir, configPath, env: { JEV_PROVIDER: "openai", OPENAI_API_KEY: "process-secret" }, dotenvValues: { TYPESAFE_API_KEY: "dotenv-secret" } });
+    assert.equal(explicit.resolved?.provider, "openai");
+    assert.equal(explicit.resolved?.key, "process-secret");
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
